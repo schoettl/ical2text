@@ -7,6 +7,7 @@
 
 import Prelude hiding (getContents)
 import Text.ICalendar
+import Text.Printf (printf)
 import Data.ByteString.Lazy (getContents)
 import Data.Text.Lazy (pack, unpack)
 import Data.Default
@@ -62,7 +63,7 @@ formatUTCTime :: TimeZone -> UTCTime -> String
 formatUTCTime tz dt = formatTime defaultTimeLocale (iso8601DateFormat (Just "%H:%M")) $ utcToLocalTime tz dt
 
 duration :: TimeZone -> VEvent -> String
-duration tz e = show $ realToFrac (diffUTCTime end start) / 60 / 60
+duration tz e = printf "%.2f" (realToFrac (diffUTCTime end start) / 60 / 60 :: Float)
     where
         start = case veDTStart e of
                     Just dt -> dtStartToUTC tz dt
