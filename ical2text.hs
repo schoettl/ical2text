@@ -10,11 +10,11 @@ import Text.ICalendar
 import Data.ByteString.Lazy (getContents)
 import Data.Text.Lazy (pack, unpack)
 import Data.Default
-import Data.Maybe (maybe)
+import Data.Maybe (maybe, fromJust)
 import Data.List (intercalate)
 import Data.Time.Format (FormatTime, formatTime, defaultTimeLocale, iso8601DateFormat)
 import Data.Time.LocalTime (TimeZone (..), getCurrentTimeZone, utcToLocalTime, localTimeToUTC, hoursToTimeZone)
-import Data.Time.Clock (UTCTime (..), secondsToDiffTime, diffUTCTime)
+import Data.Time.Clock (UTCTime (..), secondsToDiffTime, diffUTCTime, addUTCTime)
 import Data.String.Utils
 import System.Posix.Temp
 import System.IO (hPutStrLn, stderr)
@@ -51,7 +51,12 @@ endDate :: TimeZone -> VEvent -> String
 endDate tz e = case veDTEndDuration e of
                 Nothing -> ""
                 Just (Left dt) -> formatUTCTime tz $ dtEndToUTC tz dt
-                Just (Right durationProperty) -> error "cannot handle DurationProp in events"
+                Just (Right dp) -> formatUTCTime tz $ durationToEndUTC tz start dp
+                where
+                    start = dtStartToUTC tz $ fromJust $ veDTStart e
+
+durationToEndUTC :: TimeZone -> UTCTime -> DurationProp -> UTCTime
+durationToEndUTC tz start (DurationProp duration _) = error "cannot handle DurationProp in DTEND"
 
 formatUTCTime :: TimeZone -> UTCTime -> String
 formatUTCTime tz dt = formatTime defaultTimeLocale (iso8601DateFormat (Just "%H:%M")) $ utcToLocalTime tz dt
@@ -61,10 +66,16 @@ duration tz e = show $ realToFrac (diffUTCTime end start) / 60 / 60
     where
         start = case veDTStart e of
                     Just dt -> dtStartToUTC tz dt
-                    _ -> error "only support Just dt for veDTStart"
+                    Nothing -> error "DTSTART is missing"
         end = case veDTEndDuration e of
                     Just (Left dt) -> dtEndToUTC tz dt
-                    _ -> error "only support Just (Left dt) for veDTEndDuration"
+                    Just (Right dp) -> durationToEndUTC tz start dp
+                    Nothing -> oneHourFrom start -- instead of: error "DTEND is missing"
+
+oneHourFrom :: UTCTime -> UTCTime
+oneHourFrom = addUTCTime diff
+    where
+        diff = fromIntegral 3600 -- seconds
 
 description :: TimeZone -> VEvent -> String
 description tz = maybe "" (eliminateLineBreaks . unpack . descriptionValue) . veDescription
