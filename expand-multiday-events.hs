@@ -1,4 +1,10 @@
 
+-- Expand multi-day events to multiple single-day events
+-- usage: ical2text < cal.ics | expand-multiday-events
+
+-- Single-day events are passed through.
+-- Multi-day events are splitted to a sequence of full-day events, one per day.
+
 import System.IO
 import Data.Time.LocalTime
 import Data.Time.Calendar

@@ -1,5 +1,5 @@
 
--- convert iCalendar format to plain text
+-- Convert iCalendar format to plain text
 -- usage: ical2text < cal.ics
 
 -- :set makeprg=ghc\ %
