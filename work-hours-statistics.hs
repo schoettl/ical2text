@@ -1,5 +1,7 @@
 
--- work hours statistics
+-- Work hours statistics
+-- Each event's title must only consist of a sequnece of letters; one letter per worker.
+-- No spaces are allowed. For example, "js" if Jakob and Simon worked at that time.
 -- input: output of ical2text
 -- usage: ical2text < cal.ics | work-hours-statistics
 
@@ -23,19 +25,19 @@ main = do
 
 processLine :: ResultMap -> String -> IO ResultMap
 processLine map line = do
-    let _:_:hoursField:keysField:rest = words line
+    let start:_:hoursField:keysField:rest = words line
     let keys = L.map toUpper keysField :: String
     let hours = maybeRead hoursField
     when (not $ L.null $ takeWhile (/="@@") rest) $
-        printError $ "warning: event text is more than just first letters of names"
+        printError $ "warning: event title is more than just a sequence of letters at event " ++ start
     when (L.null keys) $
-        printError $ "warning: no first letters of names given for "
+        printError $ "warning: no letters given at event " ++ start
     when (L.length keys > 6) $
-        printError $ "warning: more than 6 first letters of names"
+        printError $ "warning: more than 6 letters of names at event " ++ start
     when (L.length keys /= (L.length . L.nub) keys) $
-        die $ "error: duplicate first letters in " ++ keys
+        die $ "error: duplicate letters in " ++ keys ++ " at event " ++ start
     when (isNothing hours) $
-        die $ "error: invalid hours value in 3rd column. number expected but saw: " ++ hoursField
+        die $ "error: invalid hours value in 3rd column. number expected but saw " ++ hoursField ++ " at event " ++ start
     foldM (updateResultMap $ fromJust hours) map keys
 
 updateResultMap :: Float -> ResultMap -> Char -> IO ResultMap
@@ -51,7 +53,7 @@ printResult m = do
     mapM_ printStatLine stat
     where
         printStatLine :: (Char, Float) -> IO ()
-        printStatLine (n, h) = putStrLn $ printf "%c: %.2f h (%.2f %%)" n h (h / total)
+        printStatLine (n, h) = putStrLn $ printf "%c: %.2f h (%.2f %%)" n h (h / total * 100)
         total :: Float
         total = M.foldl (+) 0 m
 
