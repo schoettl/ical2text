@@ -9,4 +9,22 @@ The output can be further processed at the command line, e.g.
 ical2text < calendar.ics | grep ^2016-12 | grep -i meeting | sort
 ```
 
+Usage:
+
+```
+ical2text
+
+Usage:
+  ical2text [options]
+
+Options:
+  -f, --field-separator=STRING
+    Field separator used to separate title, description, and location [default: @@].
+  -l, --line-separator=STRING
+    Line separator used to separate lines in description and location [default: ,,].
+  -h, --help
+    Print this help message.
+```
+
+
 Article: http://jakob.keramik-schoettl.de/blog/#sec-1-5
