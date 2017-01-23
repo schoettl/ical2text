@@ -1,3 +1,4 @@
+{-# LANGUAGE QuasiQuotes #-}
 
 -- Convert iCalendar format to plain text
 -- usage: ical2text < cal.ics
@@ -5,7 +6,10 @@
 -- :set makeprg=ghc\ %
 -- :make
 
+-- dependencies: icalendar, docopt, regex-compat
+
 import Prelude hiding (getContents)
+import Text.Regex
 import Text.ICalendar
 import Text.Printf (printf)
 import Data.ByteString.Lazy (getContents)
@@ -19,9 +23,30 @@ import Data.Time.Clock (UTCTime (..), secondsToDiffTime, diffUTCTime, addUTCTime
 import Data.String.Utils
 import System.Posix.Temp
 import System.IO (hPutStrLn, stderr)
+import System.Environment (getArgs)
+import System.Console.Docopt
+import Control.Monad (when)
+
+patterns :: Docopt
+patterns = [docopt|ical2text - convert iCalendar to plain text
+
+Usage:
+  ical2text [options]
+
+Options:
+  -f, --field-separator=STRING
+    Field separator used to separate title, description, and location [default: @@].
+  -l, --line-separator=STRING
+    Line separator used to separate lines in description and location [default: ,,].
+  -h, --help
+    Print this help message.
+|]
 
 main :: IO ()
 main = do
+    args <- parseArgsOrExit patterns =<< getArgs
+    when (isPresent args $ longOption "help") $
+        exitWithUsage patterns
     input <- getContents
     (fileUsedInErrorMessages, _) <- mkstemp "/tmp/ical2text-"
     let result = parseICalendar def fileUsedInErrorMessages input
@@ -29,21 +54,27 @@ main = do
         Left msg -> printError msg
         Right (calendars, warnings) -> do
             mapM_ printError warnings
-            proceedWithCalendars calendars
+            proceedWithCalendars args calendars
 
-proceedWithCalendars :: [VCalendar] -> IO ()
-proceedWithCalendars = mapM_ printEvents
+getArgOrExit = getArgOrExitWith patterns
 
-printEvents :: VCalendar -> IO ()
-printEvents c = do
+proceedWithCalendars :: Arguments -> [VCalendar] -> IO ()
+proceedWithCalendars args = mapM_ (printEvents args)
+
+printEvents :: Arguments -> VCalendar -> IO ()
+printEvents args c = do
     tz <- getCurrentTimeZone
-    mapM_ (printEvent tz) $ vcEvents c
+    mapM_ (printEvent args tz) $ vcEvents c
 
-printEvent :: TimeZone -> VEvent -> IO ()
-printEvent tz e = putStrLn $ unwords (take 3 fields) ++ " " ++ concatExtraFields (drop 3 fields)
+printEvent :: Arguments -> TimeZone -> VEvent -> IO ()
+printEvent args tz e = do
+    fieldSep <- getArgOrExit args $ longOption "field-separator"
+    lineSep  <- getArgOrExit args $ longOption "line-separator"
+    let fields = map (($e) . ($tz)) [startDate, endDate, duration, summary lineSep, description lineSep, location lineSep]
+    let concatExtraFields = intercalate fieldSep
+    putStrLn $ unwords (take nSimpleFields fields) ++ " " ++ concatExtraFields (drop nSimpleFields fields)
     where
-        fields = map (($e) . ($tz)) [startDate, endDate, duration, summary, description, location]
-        concatExtraFields = intercalate " @@ "
+        nSimpleFields = 3
 
 startDate :: TimeZone -> VEvent -> String
 startDate tz e = maybe "" (formatUTCTime tz . dtStartToUTC tz) $ veDTStart e
@@ -78,14 +109,14 @@ oneHourFrom = addUTCTime diff
     where
         diff = fromIntegral 3600 -- seconds
 
-description :: TimeZone -> VEvent -> String
-description tz = maybe "" (eliminateLineBreaks . unpack . descriptionValue) . veDescription
+description :: String -> TimeZone -> VEvent -> String
+description lineSep tz = maybe "" (eliminateLineBreaks lineSep . unpack . descriptionValue) . veDescription
 
-summary :: TimeZone -> VEvent -> String
-summary tz = maybe "" (eliminateLineBreaks . unpack . summaryValue) . veSummary
+summary :: String -> TimeZone -> VEvent -> String
+summary lineSep tz = maybe "" (eliminateLineBreaks lineSep . unpack . summaryValue) . veSummary
 
-location :: TimeZone -> VEvent -> String
-location tz = maybe "" (eliminateLineBreaks . unpack . locationValue) . veLocation
+location :: String -> TimeZone -> VEvent -> String
+location lineSep tz = maybe "" (eliminateLineBreaks lineSep . unpack . locationValue) . veLocation
 
 printError :: String -> IO ()
 printError = hPutStrLn stderr
@@ -113,10 +144,7 @@ dToUTC :: TimeZone -> Date -> UTCTime
 dToUTC (TimeZone tzMinutes _ _) (Date day) = UTCTime day $ secondsToDiffTime offset
     where offset = fromIntegral $ -1 * tzMinutes * 60
 
-eliminateLineBreaks :: String -> String
-eliminateLineBreaks = map replaceCRNL
+eliminateLineBreaks :: String -> String -> String
+eliminateLineBreaks lineSep s = subRegex crnlRegex s lineSep
     where
-        replaceCRNL '\n' = ' '
-        replaceCRNL '\r' = ' '
-        replaceCRNL x = x
--- eliminateLineBreaks = replace "\n\r" "  " -- is not faster but requires MissingH
+        crnlRegex = mkRegex "\n\r?|\r\n?"
