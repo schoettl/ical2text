@@ -1,6 +1,10 @@
 # to be used in a pipe after one-event-per-description-line.awk
 # ical2text < ww-zeiterfassung.ics | sort | awk -f one-event-per-description-line.awk | awk -f parse-names.awk
 
+# parameters:
+# noCategories - if set to 1, there is only one category "all".
+#   can be used to calculate the total hours for persons. default: 0
+
 function trim(s) {
     return gensub(/^ +| +$/, "", "g", s)
 }
@@ -21,11 +25,30 @@ BEGIN {
         sHours = parts[4]
         parts[4] = ""
     }
-    $3 = strtonum(gensub(/,/, ".", 1, sHours))
+    hours = strtonum(gensub(/,/, ".", 1, sHours))
 
-    if ($4 ~ /@@/) {
-        print "warning: missing tag for " text[1] > "/dev/stderr"
+    category = $4
+    if(0)
+    if (category ~ /@@/) {
+        print "warning: missing or malformed tag for " text[1] > "/dev/stderr"
         next
     }
-    print $1, $3, $4, parts[1] " " parts[2], parts[3] parts[4], text[1]
+
+    # die Stundenzahl (wenn vorhanden) wurde gelöscht
+    # eines von beiden ist also der modifier (wenn vorhanden)
+    # z.B. "tn" oder "a"
+    categoryModifier = parts[3] parts[4]
+
+    if (categoryModifier ~ /^[Tt][Nn]$/) { # Teilnehmer
+        if (category == "ausb") {
+            category = "alsTN"
+        }
+    }
+
+    if (noCategories) {
+        category = "all"
+    }
+
+    # timestamp hours tag name rest
+    print $1, $2, hours, category, parts[1] " " parts[2]
 }
