@@ -25,3 +25,15 @@ ical2text < calendar.ics \
 
 The script `compute-hours-stats.sh` simplifies the pipe construction for common
 cases. Check out the `-h` option.
+
+Post-edits in Vim:
+
+```vim
+" in decimal numbers:
+:%s/\./,/g
+
+" name must start upper-case
+" \u -> first letter upper-case, \U ... \e -> all upper-case
+" same for \l and \L
+:%s/\v^(\S+) (\S+)/\u\1 \u\2/
+```
