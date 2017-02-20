@@ -3,15 +3,16 @@
 
 printUsage() {
     cat <<EOF
-usage: $PROGNAME [ICAL_URL] < file
+usage: $PROGNAME [options] < file
+       $PROGNAME [options] ICAL_URL
 
 options:
-    -h  print help message
     -t TYPE
         input type; one of ical, text, stat; default: ical
     -n  no categories, always use "all" instead of any category
     -s STAGE_NUMBER
-        output stage; 1 is text, 2 is stat, 3 is final output
+        output stage; 1 is text, 2 is stat, 3 is final table output
+    -h  print help message
 EOF
 }
 

@@ -20,11 +20,13 @@ BEGIN {
     hours = $3
     category = $4
     name = $5
+
     if (firstLine) {
         firstLine = 0
         prevCategory = category
         prevName = name
     }
+
     if (tolower(category) == tolower(prevCategory) && tolower(name) == tolower(prevName)) {
         # Continue current group
         hoursSum += hours
@@ -38,5 +40,6 @@ BEGIN {
     }
 }
 END {
-    printResultLineForGroup(category, name, hoursSum)
+    if (!firstLine)
+        printResultLineForGroup(prevCategory, prevName, hoursSum)
 }
