@@ -1,6 +1,55 @@
 Volunteer hours statistics
 ==========================
 
+Overview
+--------
+
+The tool `compute-hours-stats.sh` is for computing hours statistics using data
+from an iCalendar.
+
+Usage:
+
+```
+ical2text < cal.ics | grep ^2017 | ./compute-hours-stats.sh -ttext -s3
+```
+
+The output is a table showing names and hours in categories, similar to this:
+
+```
+        training   organizational    teaching
+name1   5          6                 8
+name2   2          0                 1
+name3   6          2                 10
+name4   7          3                 4
+```
+
+Calendar format / syntax
+------------------------
+
+To enable the hours statistics computation, there are some rules for the
+calendar:
+
+- Create the event in the correct calendar (e.g. not the private one)
+- Put the category keyword at the beginning of the event's title, e.g. `orga
+  First meeting`
+- Put names of the attendees in the event's description field in this format:  
+  `Vorname Nachname [tn] [<ggfAbweichendeStunden>]`  
+  (`[...]` means that this is optional.)
+
+Details
+-------
+
+To see how this script comes to it's results, you can change the output stage
+with the `-s` option:
+
+- `-s1` - creates one event for each single name in the event description
+- `-s2` - summarizes the events by name and category summing up the hours
+- `-s3` - arranges the summary in a table format (see output above) - this is
+  the default
+
+The components
+--------------
+
 These tools must be used in a pipe, e.g.
 
 ```
@@ -25,6 +74,9 @@ ical2text < calendar.ics \
 
 The script `compute-hours-stats.sh` simplifies the pipe construction for common
 cases. Check out the `-h` option.
+
+Post-edits of the resulting table
+---------------------------------
 
 Post-edits in Vim:
 
