@@ -30,7 +30,7 @@ BEGIN {
 
     category = $4
     if (category ~ /@@/) {
-        print "warning: missing or malformed tag for " text[1] > "/dev/stderr"
+        print "warning: missing or malformed category for " text[1] > "/dev/stderr"
         next
     }
 
@@ -40,8 +40,12 @@ BEGIN {
     categoryModifier = parts[3] parts[4]
 
     if (tolower(categoryModifier) == "tn") { # Teilnehmer
-        if (category == "ausb") {
+        if (category == "ausb" ||  category == "jrk" || category == "eh") {
             category = "alsTN"
+        }
+    } else { # Nicht Teilnehmer, also Ausbilder
+        if (category == "übg") {
+            category = "ausb"
         }
     }
 
@@ -49,6 +53,6 @@ BEGIN {
         category = "all"
     }
 
-    # timestamp hours tag name rest
+    # timestamp hours category name rest
     print $1, $2, hours, category, parts[1] " " parts[2]
 }
