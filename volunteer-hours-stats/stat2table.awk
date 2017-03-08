@@ -2,7 +2,18 @@
 
 function printResultLineForGroup(name, hoursArr) {
     split(name, nameArr, " ")
-    print nameArr[2], nameArr[1], hoursArr["alstn"], hoursArr["freitag"], hoursArr["ausb"], hoursArr["orga"], hoursArr["seg"], hoursArr["abst"], hoursArr["wachd"]
+    printf nameArr[2] OFS nameArr[1]
+    for (i in predefinedCategories) {
+        printf OFS hoursArr[predefinedCategories[i]]
+    }
+    print ""
+}
+
+function valueInArray(val, arr) {
+    for (i in arr)
+        if (val == arr[i])
+            return 1
+    return 0
 }
 
 BEGIN {
@@ -11,7 +22,7 @@ BEGIN {
 
     FS = "\t"
     OFS = "\t"
-    print "Name", "Vorname", "Teilnehmer", "Freitag", "Ausbilder", "Orga", "SEG", "Abstellung", "Wachdienst"
+    print "Name", "Vorname", "Teilnehmer", "Freitag", "Ausbilder", "Orga", "SEG", "Abstellung", "Wachdienst", "Übung", "JRK", "EH-Ausbilder"
     firstLine = 1
 }
 {
@@ -29,8 +40,8 @@ BEGIN {
         if (hoursArr[category]) {
             print "warning: person " name " has multiple entries for category " category ". earlier hour values will be overwritten." > "/dev/stderr"
         }
-        if (!(category in predefinedCategories)) {
-            print "warning: category is not a predefined category: " category " (person " name "). ignoring this value." > "/dev/stderr"
+        if (!valueInArray(category, predefinedCategories)) {
+            print "warning: not a predefined category: " category " (person " name "). ignoring this value." > "/dev/stderr"
         }
         hoursArr[category] = hours
     } else {
