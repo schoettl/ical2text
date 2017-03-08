@@ -6,6 +6,9 @@ function printResultLineForGroup(name, hoursArr) {
 }
 
 BEGIN {
+    predefinedCategoriesStr = "freitag ausb orga seg abst wachd übg jrk eh"
+    split(predefinedCategoriesStr, predefinedCategories, " ")
+
     FS = "\t"
     OFS = "\t"
     print "Name", "Vorname", "Teilnehmer", "Freitag", "Ausbilder", "Orga", "SEG", "Abstellung", "Wachdienst"
@@ -25,6 +28,9 @@ BEGIN {
         # Continue current group
         if (hoursArr[category]) {
             print "warning: person " name " has multiple entries for category " category ". earlier hour values will be overwritten." > "/dev/stderr"
+        }
+        if (!(category in predefinedCategories)) {
+            print "warning: category is not a predefined category: " category " (person " name "). ignoring this value." > "/dev/stderr"
         }
         hoursArr[category] = hours
     } else {
