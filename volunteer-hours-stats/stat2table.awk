@@ -17,12 +17,12 @@ function valueInArray(val, arr) {
 }
 
 BEGIN {
-    predefinedCategoriesStr = "freitag ausb orga seg abst wachd übg jrk eh"
+    predefinedCategoriesStr = "freitag ausb orga seg abst wachd übg jrk eh event"
     split(predefinedCategoriesStr, predefinedCategories, " ")
 
     FS = "\t"
     OFS = "\t"
-    print "Name", "Vorname", "Teilnehmer", "Freitag", "Ausbilder", "Orga", "SEG", "Abstellung", "Wachdienst", "Übung", "JRK", "EH-Ausbilder"
+    print "Name", "Vorname", "Teilnehmer", "Freitag", "Ausbilder", "Orga", "SEG", "Abstellung", "Wachdienst", "Übung", "JRK", "EH-Ausbilder", "Event"
     firstLine = 1
 }
 {
