@@ -17,8 +17,9 @@ function valueInArray(val, arr) {
 }
 
 BEGIN {
-    predefinedCategoriesStr = "freitag ausb orga seg abst wachd übg jrk eh event"
+    predefinedCategoriesStr = "alstn freitag ausb orga seg abst wachd übg jrk eh event"
     split(predefinedCategoriesStr, predefinedCategories, " ")
+    # Warning: The order of the above and below categories/headers must must be the same!
 
     FS = "\t"
     OFS = "\t"
