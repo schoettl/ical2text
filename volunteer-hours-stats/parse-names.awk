@@ -28,7 +28,7 @@ BEGIN {
     }
     hours = strtonum(gensub(/,/, ".", 1, sHours))
 
-    category = $4
+    category = tolower($4)
     if (category ~ /@@/) {
         print "warning: missing or malformed category for " text[1] > "/dev/stderr"
         next
@@ -40,7 +40,7 @@ BEGIN {
     categoryModifier = parts[3] parts[4]
 
     if (tolower(categoryModifier) == "tn") { # Teilnehmer
-        if (category == "ausb" ||  category == "jrk" || category == "eh") {
+        if (category == "ausb" || category == "jrk" || category == "eh") {
             category = "alsTN"
         }
     } else { # Nicht Teilnehmer, also Ausbilder
