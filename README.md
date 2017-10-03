@@ -1,6 +1,9 @@
 ical2text
 =========
 
+Overview
+--------
+
 Convert iCalendar format (.ics) to plain text.
 The output can be further processed at the command line, e.g.
 
@@ -28,3 +31,14 @@ Options:
 
 
 Article: http://jakob.keramik-schoettl.de/blog/#sec-1-5
+
+Build
+-----
+
+[Stack](https://www.haskellstack.org), Haskell's build tool, must be installed.
+
+```
+stack install docopt
+stack install iCalendar
+stack ghc ical2text.hs
+```
