@@ -8,10 +8,11 @@
 import Control.Monad
 import System.IO
 import System.Exit
-import Data.Char
+import qualified Data.Char as C
 import Data.List as L
 import Data.Map as M
 import Data.Maybe
+import qualified Data.Text as T
 import Text.Read
 import Text.Printf
 
@@ -25,11 +26,10 @@ main = do
 
 processLine :: ResultMap -> String -> IO ResultMap
 processLine map line = do
-    let start:_:hoursField:keysField:rest = words line
-    let keys = L.map toUpper keysField :: String
+    let start:_:hoursField:rest = words line
+    let keysField = takeWhile (/='@') $ unwords rest
+    let keys = T.unpack . T.map C.toUpper . T.strip . T.pack $ keysField :: String
     let hours = maybeRead hoursField
-    when (not $ L.null $ takeWhile (/="@@") rest) $
-        printError $ "warning: event title is more than just a sequence of letters at event " ++ start
     when (L.null keys) $
         printError $ "warning: no letters given at event " ++ start
     when (L.length keys > 6) $
