@@ -12,23 +12,22 @@ import Data.Time.Format
 
 main :: IO ()
 main = do
+    let includeSeriesIdInOutput = False -- TODO flag?
     input <- getContents
-    mapM_ printExpandedEvents $ lines input
+    mapM_ (printExpandedEvents includeSeriesIdInOutput) $ zip [1..] $ lines input
 
-printExpandedEvents :: String -> IO ()
-printExpandedEvents line = do
+printExpandedEvents :: Bool -> (Int, String) -> IO ()
+printExpandedEvents seriesId (i, line) = do
     let start:end:_:rest = words line -- does not preserve consecutive whitespace!
     let (LocalTime startDay _) = parseTimeField start
     let (LocalTime ed et) = parseTimeField end
     let endDayIncl = if et > midnight
                          then ed
                          else addDays (-1) ed
-    if startDay == endDayIncl
-        then putStrLn line
-        else mapM_ (printEvents $ unwords rest) [startDay..endDayIncl]
+    mapM_ (printEvent (toMaybe seriesId i) $ unwords rest) [startDay..endDayIncl]
 
-printEvents :: String -> Day -> IO ()
-printEvents rest day = putStrLn $ unwords [start, end, hours] ++ " " ++ rest
+printEvent :: Maybe Int -> String -> Day -> IO ()
+printEvent i rest day = putStrLn $ unwords [start, end, hours] ++ " " ++ maybe "" ((++" ").show) i ++ rest
     where
         hours = show 24
         start = formatTimeField $ LocalTime day midnight
@@ -39,3 +38,6 @@ parseTimeField = parseTimeOrError False defaultTimeLocale formatString
 formatTimeField = formatTime defaultTimeLocale formatString
 
 formatString = iso8601DateFormat (Just "%H:%M")
+
+toMaybe True x = Just x
+toMaybe False _ = Nothing
