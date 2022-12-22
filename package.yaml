@@ -1,0 +1,44 @@
+
+# generated with:
+# stack new ical2text simple-hpack
+
+name:                ical2text
+version:             0.1.0.0
+#synopsis:
+#description:
+homepage:            https://github.com/schoettl/ical2text
+license:             BSD3
+author:              Jakob Schöttl
+maintainer:          jschoett@gmail.com
+copyright:           2022 Jakob Schöttl
+category:            Tool
+extra-source-files:
+- README.md
+
+dependencies:
+  - base >= 4.7 && < 5
+  - docopt
+  - regex-compat
+  - iCalendar
+
+ghc-options:
+- -Wall
+- -Wcompat
+- -Widentities
+- -Wincomplete-record-updates
+- -Wincomplete-uni-patterns
+- -Wmissing-export-lists
+- -Wmissing-home-modules
+- -Wpartial-fields
+- -Wredundant-constraints
+
+executables:
+  ical2text:
+    source-dirs:      .
+    main:             ical2text.hs
+  expand-multiday-events:
+    source-dirs:      .
+    main:             expand-multiday-events.hs
+  work-hours-statistics:
+    source-dirs:      .
+    main:             work-hours-statistics.hs
