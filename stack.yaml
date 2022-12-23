@@ -8,7 +8,7 @@
 # A snapshot resolver dictates the compiler version and the set of packages
 # to be used for project dependencies. For example:
 #
-# resolver: lts-3.5
+resolver: lts-20.4
 # resolver: nightly-2015-09-21
 # resolver: ghc-7.10.2
 #
@@ -17,8 +17,6 @@
 #
 # resolver: ./custom-snapshot.yaml
 # resolver: https://example.com/snapshots/2018-01-01.yaml
-resolver:
-  url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/20/4.yaml
 
 # User packages to be built.
 # Various formats can be used as shown in the example below.
@@ -31,17 +29,17 @@ resolver:
 #   - wai
 packages:
 - .
+
 # Dependency packages to be pulled from upstream that are not in the resolver.
 # These entries can reference officially published versions as well as
 # forks / in-progress versions pinned to a git hash. For example:
 #
 extra-deps:
- - docopt-0.7.0.7@sha256:a3d2eac54cd77d8c0b306ff96fb57be55542f143d81766aa1ae51458ad790dbe,3655
- - iCalendar-0.4.0.5@sha256:2a3dca74955de4d3548e4592201093b59328ca153ad207bad189e73cc04f4be0,1962
- - mime-0.4.0.2@sha256:208947d9d1a19d08850be67ecb28c6e776db697f3bba05bd9d682e51a59f241f,983
-# - acme-missiles-0.3
-# - git: https://github.com/commercialhaskell/stack.git
-#   commit: e7b331f14bcffb8367cd58fbfc8b40ec7642100a
+- mime-0.4.0.2
+- git: https://github.com/schoettl/docopt.hs.git
+  commit: d39a28230470959a41f77e6416207d727cbc2447
+- git: https://github.com/schoettl/iCalendar.git
+  commit: 49080ae04d47d2f300e4227e594368708b00adb8
 
 # Override default flag values for local packages and extra-deps
 # flags: {}

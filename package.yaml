@@ -15,11 +15,21 @@ category:            Tool
 extra-source-files:
 - README.md
 
+#allow-newer: true
+
 dependencies:
-  - base >= 4.7 && < 5
+  - base
   - docopt
   - regex-compat
   - iCalendar
+  - base64-bytestring
+  - bytestring
+  - time
+  - containers
+  - text
+  - data-default
+  - MissingH
+  - unix
 
 ghc-options:
 - -Wall
