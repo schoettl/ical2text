@@ -41,6 +41,12 @@ extra-deps:
 - git: https://github.com/schoettl/iCalendar.git
   commit: 49080ae04d47d2f300e4227e594368708b00adb8
 
+nix:
+  enable: true
+  pure: false
+  path:
+    - "nixpkgs=https://github.com/NixOS/nixpkgs/archive/22.05.tar.gz"
+
 # Override default flag values for local packages and extra-deps
 # flags: {}
 
