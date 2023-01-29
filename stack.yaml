@@ -45,7 +45,7 @@ nix:
   enable: true
   pure: false
   path:
-    - "nixpkgs=https://github.com/NixOS/nixpkgs/archive/22.05.tar.gz"
+    - "nixpkgs=https://github.com/NixOS/nixpkgs/archive/22.11.tar.gz"
 
 # Override default flag values for local packages and extra-deps
 # flags: {}
