@@ -8,7 +8,7 @@
 # A snapshot resolver dictates the compiler version and the set of packages
 # to be used for project dependencies. For example:
 #
-resolver: lts-20.4
+resolver: lts-18.13
 # resolver: nightly-2015-09-21
 # resolver: ghc-7.10.2
 #
@@ -40,12 +40,12 @@ extra-deps:
   commit: d39a28230470959a41f77e6416207d727cbc2447
 - git: https://github.com/schoettl/iCalendar.git
   commit: 49080ae04d47d2f300e4227e594368708b00adb8
+- MissingH-1.5.0.1@sha256:34bdc3ddc94a5c58d76d3c36bc7af052213c2584492cf81f7b005c03b210a985,4791
 
 nix:
   enable: true
   pure: false
-  path:
-    - "nixpkgs=https://github.com/NixOS/nixpkgs/archive/22.11.tar.gz"
+  packages: [ glibc, postgresql ]
 
 # Override default flag values for local packages and extra-deps
 # flags: {}
