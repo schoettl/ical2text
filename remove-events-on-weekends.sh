@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Remove events on weekends. Only the start time is considered!
 # In other words: grep for events that take place Mo - Fr.
 

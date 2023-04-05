@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Prepend a column with the weekday number: 1 (Mon) to 7 (Sun)
 # -h -> human readable (Mon to Sun)
 

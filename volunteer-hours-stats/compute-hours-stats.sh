@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Compute volunteer hours statistics
 
 printUsage() {
