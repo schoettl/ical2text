@@ -8,7 +8,7 @@
 # A snapshot resolver dictates the compiler version and the set of packages
 # to be used for project dependencies. For example:
 #
-resolver: lts-18.13
+resolver: lts-21.5
 # resolver: nightly-2015-09-21
 # resolver: ghc-7.10.2
 #
@@ -35,17 +35,17 @@ packages:
 # forks / in-progress versions pinned to a git hash. For example:
 #
 extra-deps:
-- mime-0.4.0.2
-- git: https://github.com/schoettl/docopt.hs.git
-  commit: d39a28230470959a41f77e6416207d727cbc2447
 - git: https://github.com/schoettl/iCalendar.git
   commit: 49080ae04d47d2f300e4227e594368708b00adb8
-- MissingH-1.5.0.1@sha256:34bdc3ddc94a5c58d76d3c36bc7af052213c2584492cf81f7b005c03b210a985,4791
+- git: https://github.com/schoettl/docopt.hs
+  commit: a18d8e6bc685a64521981a7cf3dc7386e68f3cfe
+- MissingH-1.6.0.0@sha256:ad4aecd8ec559936809c68dc82e2eed4ffcb43b77615537b884b9205ae0ea275,4637
+- mime-0.4.0.2@sha256:208947d9d1a19d08850be67ecb28c6e776db697f3bba05bd9d682e51a59f241f,983
 
 nix:
   enable: true
   pure: false
-  packages: [ glibc, postgresql ]
+  packages: [ glibc, libffi ]
 
 # Override default flag values for local packages and extra-deps
 # flags: {}

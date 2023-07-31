@@ -1,6 +1,7 @@
 *.hi
 *.o
 *.swp
+.stack-work/
 ical2text
 expand-multiday-events
 work-hours-statistics
