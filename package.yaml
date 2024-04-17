@@ -22,7 +22,6 @@ dependencies:
   - docopt
   - regex-compat
   - iCalendar
-  - base64-bytestring
   - bytestring
   - time
   - containers

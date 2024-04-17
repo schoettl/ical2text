@@ -6,7 +6,7 @@
 -- :set makeprg=ghc\ %
 -- :make
 
--- dependencies: icalendar, docopt, regex-compat
+-- dependencies: iCalendar, docopt, regex-compat
 
 import Prelude hiding (getContents)
 import Text.Regex
