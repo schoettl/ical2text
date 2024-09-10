@@ -29,6 +29,7 @@ dependencies:
   - data-default
   - MissingH
   - unix
+  - iCalendar
 
 ghc-options:
 - -Wall

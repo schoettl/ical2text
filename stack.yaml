@@ -36,10 +36,9 @@ packages:
 # forks / in-progress versions pinned to a git hash. For example:
 #
 extra-deps:
-- git: https://github.com/schoettl/iCalendar.git
-  commit: 9c596c859720c349aa8860499030decf1666d6de
 - git: https://github.com/schoettl/docopt.hs
   commit: a18d8e6bc685a64521981a7cf3dc7386e68f3cfe
+- iCalendar-0.4.1.0
 - mime-0.4.0.2@sha256:208947d9d1a19d08850be67ecb28c6e776db697f3bba05bd9d682e51a59f241f,983
 
 nix:
